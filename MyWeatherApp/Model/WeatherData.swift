@@ -9,8 +9,9 @@ import Foundation
 
 struct Response : Decodable {
     
-    var list: [List]
-    //let weather: Double
+    let name: String
+    let main: Main
+    let weather:[Weather]
 }
 
 struct Main: Codable {
@@ -22,7 +23,8 @@ struct Main: Codable {
     let humidity: Double
 }
 
-struct List:Decodable {
-    let main: Main
+struct Weather:Decodable {
+    let description:String
+    let id: Int
 }
 

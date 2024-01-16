@@ -3,4 +3,70 @@
    uuid = "8E7DD410-FBCE-47FC-8EEF-AFD5BAF58A07"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "FD4DC9CF-DBBE-467F-B4EA-B903A54FD467"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MyWeatherApp/Model/WeatherManager.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "33"
+            endingLineNumber = "33"
+            landmarkName = "fetchTheWeatherForMe(lat:lon:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "FD4DC9CF-DBBE-467F-B4EA-B903A54FD467 - fc0d345ca56eb043"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MyWeatherApp.WeatherManager.fetchTheWeatherForMe(lat: Swift.Double, lon: Swift.Double) -&gt; ()"
+                  moduleName = "MyWeatherApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/andriimelnyk/Desktop/MyWeatherApp/MyWeatherApp/Model/WeatherManager.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "33"
+                  endingLineNumber = "33"
+                  offsetFromSymbolStart = "92">
+               </Location>
+               <Location
+                  uuid = "FD4DC9CF-DBBE-467F-B4EA-B903A54FD467 - fc0d345ca56eb060"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MyWeatherApp.WeatherManager.fetchTheWeatherForMe(lat: Swift.Double, lon: Swift.Double) -&gt; ()"
+                  moduleName = "MyWeatherApp"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/andriimelnyk/Desktop/MyWeatherApp/MyWeatherApp/Model/WeatherManager.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "34"
+                  endingLineNumber = "34"
+                  offsetFromSymbolStart = "92">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "42C478C6-28B3-4914-B6F7-BAFCE60CF29F"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MyWeatherApp/Model/WeatherModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "30"
+            endingLineNumber = "30"
+            landmarkName = "conditionName"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>
