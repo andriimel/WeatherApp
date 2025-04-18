@@ -63,10 +63,12 @@ dependencies {
     implementation ("com.squareup.okhttp3:okhttp:4.9.0")
     implementation ("com.squareup.moshi:moshi-kotlin:1.12.0")
     implementation ("com.google.android.gms:play-services-location:18.0.0")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.0")
 
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1")
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
 
     // Location
     implementation ("com.google.android.gms:play-services-location:18.0.0")
+    implementation ("androidx.activity:activity-ktx:1.7.0")
 }
