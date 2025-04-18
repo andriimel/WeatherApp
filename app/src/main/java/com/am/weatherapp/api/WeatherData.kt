@@ -50,3 +50,7 @@ data class Condition(
     val icon: String,
     val text: String
 )
+data class HourlyTemp(
+    val hour: String,
+    val temperature: Float
+)
