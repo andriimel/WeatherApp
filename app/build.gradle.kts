@@ -73,5 +73,5 @@ dependencies {
     implementation ("androidx.activity:activity-ktx:1.7.0")
     implementation("io.coil-kt:coil-compose:2.5.0")
 
-    implementation("com.github.tehras:charts:0.2.4")
+
 }
