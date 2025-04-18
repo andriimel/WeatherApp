@@ -9,19 +9,25 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.ViewModelProvider
 
 import androidx.lifecycle.lifecycleScope
+import com.am.weatherapp.ViewModel.WeatherViewModel
 import com.am.weatherapp.api.RetrofitInstance
 import com.am.weatherapp.location.LocationPermissionHandler
+import com.am.weatherapp.ui.WeatherPage
 
 import com.am.weatherapp.ui.theme.WeatherAppTheme
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.*
 
 class MainActivity : ComponentActivity() {
     private lateinit var permissionHandler: LocationPermissionHandler
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var viewModel: WeatherViewModel
 
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -32,6 +38,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        viewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         permissionHandler = LocationPermissionHandler(
             activity = this,
@@ -41,10 +48,11 @@ class MainActivity : ComponentActivity() {
                 getLocation()
             } else {
                 if (!permissionHandler.shouldShowRationale()) {
-                    // Користувач відмовив і натиснув "більше не питати"
+                    // Refuse with "never ask again"
                     permissionHandler.openAppSettings()
                 } else {
-                    Toast.makeText(this, "Потрібен дозвіл для визначення локації", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "We need access to use your location!!", Toast.LENGTH_SHORT).show()
+                    //permissionHandler.openAppSettings()
                 }
             }
         }
@@ -65,6 +73,12 @@ class MainActivity : ComponentActivity() {
         setContent {
             WeatherAppTheme {
 
+                val weatherState by viewModel.weather.collectAsState()
+
+                WeatherPage(
+                    weatherState = weatherState,
+                    onRequestLocation = { checkLocationPermission() }
+                )
             }
         }
     }
@@ -78,21 +92,21 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun getLocation() {
-        // Отримання геолокації
+        // Getting coordinates
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location ->
                 if (location != null) {
                     val lat = location.latitude
                     val lon = location.longitude
                     Toast.makeText(this, "Lat: $lat, Lon: $lon", Toast.LENGTH_LONG).show()
+                    viewModel.loadWeatherForLoacation(lat,lon)
 
-                    // ТУТ МОЖНА ВИКЛИКАТИ API ПОГОДИ, передаючи lat/lon
                 } else {
-                    Toast.makeText(this, "Локація не знайдена", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Location hasnt found", Toast.LENGTH_SHORT).show()
                 }
             }
             .addOnFailureListener {
-                Toast.makeText(this, "Помилка локації: ${it.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Error: ${it.message}", Toast.LENGTH_SHORT).show()
             }
     }
 }
