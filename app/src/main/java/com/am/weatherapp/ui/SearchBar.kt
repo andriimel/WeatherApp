@@ -10,6 +10,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
@@ -38,18 +39,21 @@ import java.nio.file.WatchEvent
         enter = slideInVertically(initialOffsetY = { -it }) + fadeIn(),
         exit = slideOutVertically(targetOffsetY = { -it }) + fadeOut()
     ) {
-        Column(modifier = Modifier.padding(top = 15.dp)) {
+        Column(modifier = Modifier.padding(top = 20.dp)) {
 
             OutlinedTextField(
                 value = searchText,
                 onValueChange = onSearchTextChange,
+                maxLines = 1,
                 placeholder = { Text("Enter city name") },
                 trailingIcon = {
                     IconButton(onClick = { onSearchClick()}) {
                         Icon(Icons.Default.Search, contentDescription = "Search")
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+
+                    .fillMaxWidth()
 
             )
 
