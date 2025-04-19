@@ -37,10 +37,12 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.am.weatherapp.api.WeatherState
 import androidx.compose.runtime.*
+import com.am.weatherapp.api.NetworkResponse
 
 @Composable
-fun WeatherPage(weatherState: WeatherState,
-                onRequestLocation: () -> Unit) {
+fun WeatherPage(weatherState: NetworkResponse<WeatherState>,
+                onRequestLocation: () -> Unit,
+                onSearchCity:(String) -> Unit) {
 
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val topPadding = (screenHeight / 10).dp
@@ -61,6 +63,10 @@ fun WeatherPage(weatherState: WeatherState,
         SearchBar(isVisible = isSearchActive,
             searchText = searchText,
             onSearchTextChange = {searchText = it},
+            onSearchClick = {
+                onSearchCity(searchText)
+                isSearchActive = false
+            },
            )
 
         Column(modifier = Modifier
@@ -119,12 +125,26 @@ fun WeatherPage(weatherState: WeatherState,
                     )
                 }
             }
-            WeatherInfoSection(
-                cityName = weatherState.cityName,
-                iconUrl = weatherState.iconUrl,
-                temperature = weatherState.temperature,
-                description = weatherState.description
-            )
+            when (weatherState) {
+                is NetworkResponse.Loading -> {
+                    Spacer(modifier = Modifier.height(32.dp))
+                    Text("Loading...", color = Color.DarkGray)
+                }
+
+                is NetworkResponse.Success -> {
+                    WeatherInfoSection(
+                        cityName = weatherState.data.cityName,
+                        iconUrl = weatherState.data.iconUrl,
+                        temperature = weatherState.data.temperature,
+                        description = weatherState.data.description
+                    )
+                }
+
+                is NetworkResponse.Error -> {
+                    Spacer(modifier = Modifier.height(32.dp))
+                    Text("Error: ${weatherState.message}", color = Color.Red)
+                }
+            }
 
         }
     }

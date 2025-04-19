@@ -1,6 +1,7 @@
 package com.am.weatherapp.ui
 
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -29,6 +30,7 @@ import java.nio.file.WatchEvent
     fun SearchBar(isVisible: Boolean,
          searchText:String,
         onSearchTextChange: (String) -> Unit,
+                  onSearchClick:() -> Unit
 
         ) {
     AnimatedVisibility(
@@ -43,7 +45,7 @@ import java.nio.file.WatchEvent
                 onValueChange = onSearchTextChange,
                 placeholder = { Text("Enter city name") },
                 trailingIcon = {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = { onSearchClick()}) {
                         Icon(Icons.Default.Search, contentDescription = "Search")
                     }
                 },

@@ -77,8 +77,8 @@ class MainActivity : ComponentActivity() {
 
                 WeatherPage(
                     weatherState = weatherState,
-                    onRequestLocation = { checkLocationPermission() }
-
+                    onRequestLocation = { checkLocationPermission() },
+                    onSearchCity = { city -> viewModel.loadWeatherForCity(  city) }
                 )
             }
         }
@@ -100,6 +100,7 @@ class MainActivity : ComponentActivity() {
                     val lat = location.latitude
                     val lon = location.longitude
                     Toast.makeText(this, "Lat: $lat, Lon: $lon", Toast.LENGTH_LONG).show()
+
                     viewModel.loadWeatherForLoacation(lat,lon)
 
                 } else {
