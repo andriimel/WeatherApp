@@ -31,8 +31,7 @@ class MainActivity : ComponentActivity() {
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        if (isGranted) loadWeatherByLocation()
-        else Toast.makeText(this, "Location permission required!", Toast.LENGTH_SHORT).show()
+        permissionHandler.handlePermissionResult(isGranted)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,19 +40,18 @@ class MainActivity : ComponentActivity() {
         viewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         locationHandler = LocationHandler(this)
+
         permissionHandler = LocationPermissionHandler(
             activity = this,
             permissionLauncher = permissionLauncher
         ) { isGranted ->
             if (isGranted) {
-                viewModel.loadWeatherForLocation("")
-            } else {
-                if (!permissionHandler.shouldShowRationale()) {
-                    // Refuse with "never ask again"
-                    permissionHandler.openAppSettings()
-                } else {
-                    Toast.makeText(this, "We need access to use your location!!", Toast.LENGTH_SHORT).show()
-                    //permissionHandler.openAppSettings()
+                locationHandler.getCityFromCurrentLocation { city ->
+                    if (city != null) {
+                        viewModel.loadWeatherForLocation(city)
+                    } else {
+                        Toast.makeText(this, "Could not detect city from location", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
@@ -66,30 +64,12 @@ class MainActivity : ComponentActivity() {
 
                 WeatherPage(
                     weatherState = weatherState,
-                    onRequestLocation = { checkLocationPermission() },
+                    onRequestLocation = { permissionHandler.checkAndRequestPermission() },
                     onSearchCity = { city -> viewModel.loadWeatherForLocation(city) }
                 )
             }
         }
-        checkLocationPermission()
-    }
 
-    private fun checkLocationPermission() {
-        if (permissionHandler.hasPermission()) {
-            loadWeatherByLocation()
-        } else {
-            permissionHandler.requestPermission()
-        }
-    }
-
-    private fun loadWeatherByLocation() {
-        locationHandler.getLastLocation { location ->
-            if (location != null) {
-                val locString = "${location.latitude},${location.longitude}"
-                viewModel.loadWeatherForLocation(locString)
-            } else {
-                Toast.makeText(this, "Location not found", Toast.LENGTH_SHORT).show()
-            }
-        }
+        permissionHandler.checkAndRequestPermission()
     }
 }

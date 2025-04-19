@@ -16,6 +16,13 @@ class LocationPermissionHandler(
     private val onPermissionResult: (Boolean) -> Unit
 ) {
 
+    fun checkAndRequestPermission(){
+        if (hasPermission()){
+            onPermissionResult(true)
+        } else{
+            requestPermission()
+        }
+    }
     fun hasPermission(): Boolean {
         return ContextCompat.checkSelfPermission(
             activity,
