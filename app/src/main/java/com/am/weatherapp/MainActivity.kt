@@ -78,6 +78,7 @@ class MainActivity : ComponentActivity() {
                 WeatherPage(
                     weatherState = weatherState,
                     onRequestLocation = { checkLocationPermission() }
+
                 )
             }
         }

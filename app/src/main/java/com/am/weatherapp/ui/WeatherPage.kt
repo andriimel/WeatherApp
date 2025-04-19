@@ -21,30 +21,31 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.am.weatherapp.api.WeatherState
-import kotlinx.coroutines.internal.OpDescriptor
+import androidx.compose.runtime.*
 
 @Composable
 fun WeatherPage(weatherState: WeatherState,
-                onRequestLocation: () -> Unit ) {
+                onRequestLocation: () -> Unit) {
 
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val topPadding = (screenHeight / 10).dp
+    var isSearchActive by remember { mutableStateOf(false) }
+    var searchText by remember { mutableStateOf("") }
 
     Box (modifier = Modifier
         .fillMaxSize()
@@ -57,6 +58,11 @@ fun WeatherPage(weatherState: WeatherState,
             )
         )
         ){
+        SearchBar(isVisible = isSearchActive,
+            searchText = searchText,
+            onSearchTextChange = {searchText = it},
+           )
+
         Column(modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
@@ -93,7 +99,9 @@ fun WeatherPage(weatherState: WeatherState,
 
                 Spacer(modifier = Modifier.weight(0.1f))
                 Button(
-                    onClick = {},
+                    onClick = {
+                        isSearchActive = !isSearchActive
+                    },
                     modifier = Modifier.weight(0.4f),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFFFFE6CF)
