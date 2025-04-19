@@ -20,6 +20,7 @@ import com.am.weatherapp.ui.theme.WeatherAppTheme
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import androidx.compose.runtime.*
+import com.am.weatherapp.location.LastLocationManager
 import com.am.weatherapp.location.LocationHandler
 
 class MainActivity : ComponentActivity() {
@@ -27,6 +28,8 @@ class MainActivity : ComponentActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var viewModel: WeatherViewModel
     private lateinit var locationHandler: LocationHandler
+    private lateinit var lastLocationManager: LastLocationManager
+
 
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -40,6 +43,10 @@ class MainActivity : ComponentActivity() {
         viewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         locationHandler = LocationHandler(this)
+        lastLocationManager = LastLocationManager(this)
+
+
+        val lastCity = lastLocationManager.getLastCity()
 
         permissionHandler = LocationPermissionHandler(
             activity = this,
@@ -48,13 +55,22 @@ class MainActivity : ComponentActivity() {
             if (isGranted) {
                 locationHandler.getCityFromCurrentLocation { city ->
                     if (city != null) {
-                        viewModel.loadWeatherForLocation(city)
+                        if (lastCity != null) {
+                            viewModel.loadWeatherForLocation(lastCity)
+                        } else {
+                            viewModel.loadWeatherForLocation(city)
+                        }
                     } else {
-                        Toast.makeText(this, "Could not detect city from location", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this,
+                            "Could not detect city from location", Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
         }
+
+
 
 
         setContent {
@@ -65,7 +81,9 @@ class MainActivity : ComponentActivity() {
                 WeatherPage(
                     weatherState = weatherState,
                     onRequestLocation = { permissionHandler.checkAndRequestPermission() },
-                    onSearchCity = { city -> viewModel.loadWeatherForLocation(city) }
+                    onSearchCity = { city ->
+                        viewModel.loadWeatherForLocation(city)
+                    lastLocationManager.saveLastCity(city)}
                 )
             }
         }

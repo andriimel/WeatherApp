@@ -16,7 +16,7 @@ class WeatherViewModel: ViewModel() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
 
-    fun loadWeatherForLocation(location: String) {
+    fun loadWeatherForLocation(location: String, onSuccess: (String) -> Unit = {}) {
         viewModelScope.launch {
             _weather.value = NetworkResponse.Loading
             try {
@@ -24,12 +24,16 @@ class WeatherViewModel: ViewModel() {
                     location = location,
                     apiKey = "c50335248c6142ed803172103251104"
                 )
+
+                val cityName = response.location.name
                 _weather.value = NetworkResponse.Success(
                 WeatherState(
-                    cityName = response.location.name,
+                    cityName = cityName,
                     temperature = "${response.current.temp_c}°C",
                     description = response.current.condition.text,
                     iconUrl = "https:${response.current.condition.icon}"))
+
+                onSuccess(cityName)
             }catch (e: Exception) {
                 _weather.value = NetworkResponse.Error("Failed to load weather")
             }
