@@ -203,7 +203,6 @@ fun WeatherInfoSection(cityName: String,
         )
         val hourlyWeatherData = getMockHourlyWeatherData()
 
-        // Інша логіка відображення на сторінці
         HourlyForecastSection(hourlyData = hourlyWeatherData)
     }
     

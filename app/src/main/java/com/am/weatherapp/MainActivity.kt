@@ -55,11 +55,12 @@ class MainActivity : ComponentActivity() {
             if (isGranted) {
                 locationHandler.getCityFromCurrentLocation { city ->
                     if (city != null) {
-                        if (lastCity != null) {
-                            viewModel.loadWeatherForLocation(lastCity)
-                        } else {
-                            viewModel.loadWeatherForLocation(city)
-                        }
+//                        if (lastCity != null) {
+//                            viewModel.loadWeatherForLocation(lastCity)
+//                        } else {
+//                            viewModel.loadWeatherForLocation(city)
+//                        }
+                        viewModel.loadWeatherForLocation(city)
                     } else {
                         Toast.makeText(
                             this,

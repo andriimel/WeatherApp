@@ -2,8 +2,11 @@ package com.am.weatherapp.api
 
 data class WeatherData (
     val current: Current,
-    val location: Location
+    val location: Location,
+    val forecast: Forecast
     )
+
+
 data class Location(
     val country: String,
     val lat: Double,
@@ -17,8 +20,6 @@ data class Location(
 data class Current(
     val cloud: Int,
     val condition: Condition,
-    val dewpoint_c: Double,
-    val dewpoint_f: Double,
     val feelslike_c: Double,
     val feelslike_f: Double,
     val gust_kph: Double,
@@ -46,11 +47,21 @@ data class Current(
     val windchill_f: Double
 )
 data class Condition(
-    val code: Int,
+
     val icon: String,
-    val text: String
+    val text: String,
 )
-data class HourlyTemp(
-    val hour: String,
-    val temperature: Float
+data class Forecast(
+    val forecastday: List<ForecastDay>
+)
+//
+data class ForecastDay(
+
+    val hour: List<Hour>
+)
+
+data class Hour(
+    val time: String,
+    val temp_c: Double,
+    val condition: Condition
 )
