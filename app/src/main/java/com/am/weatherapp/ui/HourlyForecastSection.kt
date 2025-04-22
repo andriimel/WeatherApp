@@ -20,11 +20,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 
 import com.am.weatherapp.api.HourlyWeatherItem
+import java.text.SimpleDateFormat
+import java.util.Locale
+import kotlin.math.ceil
 
 @Composable
 fun HourlyWeatherCell(item: HourlyWeatherItem){
@@ -46,8 +50,9 @@ fun HourlyWeatherCell(item: HourlyWeatherItem){
         ) {
             // Time
             Text(
-                text = item.time,
+                text = formatTime(item.time),
                 fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
                 color = Color(0xFF1C2B40)
             )
 
@@ -63,14 +68,18 @@ fun HourlyWeatherCell(item: HourlyWeatherItem){
             Spacer(modifier = Modifier.height(16.dp))
 
 // Temp
+            val roundTemp = ceil((item.tempCelsius).toDouble()).toInt()
             Text(
-                text = item.tempCelsius,
+                text = "$roundTemp°C",
                 fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
                 color = Color(0xFF1C2B40)
             )
         }
     }
 }
+
+
 @Composable
 
 fun HourlyForecastSection(hourlyData: List<HourlyWeatherItem>) {
@@ -85,4 +94,12 @@ fun HourlyForecastSection(hourlyData: List<HourlyWeatherItem>) {
             HourlyWeatherCell(item = item)
         }
     }
+}
+
+fun formatTime(timeString: String): String {
+    val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+    val outputFormat = SimpleDateFormat("h a", Locale.getDefault()) // Americans format
+
+    val date = inputFormat.parse(timeString) ?: return timeString
+    return outputFormat.format(date)
 }

@@ -201,26 +201,9 @@ fun WeatherInfoSection(cityName: String,
             color = Color(0xFF1C2B40),
             modifier = Modifier.padding(top = 4.dp)
         )
-        val hourlyWeatherData = getMockHourlyWeatherData()
 
-        HourlyForecastSection(hourlyData = hourlyWeatherData)
+        HourlyForecastSection(hourlyData = hourlyWeather)
     }
     
 }
 
-
-
-
-fun getMockHourlyWeatherData(): List<HourlyWeatherItem> {
-    return listOf(
-        HourlyWeatherItem(time = "08:00", iconUrl = "https://example.com/icon1.png", tempCelsius = "15°C"),
-        HourlyWeatherItem(time = "09:00", iconUrl = "https://example.com/icon2.png", tempCelsius = "17°C"),
-        HourlyWeatherItem(time = "10:00", iconUrl = "https://example.com/icon3.png", tempCelsius = "19°C"),
-        HourlyWeatherItem(time = "11:00", iconUrl = "https://example.com/icon4.png", tempCelsius = "20°C"),
-        HourlyWeatherItem(time = "12:00", iconUrl = "https://example.com/icon5.png", tempCelsius = "22°C"),
-        HourlyWeatherItem(time = "09:00", iconUrl = "https://example.com/icon2.png", tempCelsius = "17°C"),
-        HourlyWeatherItem(time = "10:00", iconUrl = "https://example.com/icon3.png", tempCelsius = "19°C"),
-        HourlyWeatherItem(time = "11:00", iconUrl = "https://example.com/icon4.png", tempCelsius = "20°C"),
-        HourlyWeatherItem(time = "12:00", iconUrl = "https://example.com/icon5.png", tempCelsius = "22°C"),
-    )
-}

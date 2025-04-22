@@ -4,7 +4,7 @@ data class WeatherState(val cityName: String = "",
                         val temperature: String = "",
                         val description: String = "",
                         val iconUrl: String = "",
-                        val hourlyData: List<HourlyWeatherItem> = emptyList()
+                        val hourlyData: List<HourlyWeatherItem>
 )
 
 data class HourlyWeatherItem(
