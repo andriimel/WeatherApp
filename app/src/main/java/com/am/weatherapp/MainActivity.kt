@@ -71,9 +71,6 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-
-
-
         setContent {
             WeatherAppTheme {
 
@@ -88,7 +85,6 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
-
         permissionHandler.checkAndRequestPermission()
     }
 }

@@ -14,9 +14,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,21 +29,31 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 
 import com.am.weatherapp.api.HourlyWeatherItem
+import com.am.weatherapp.ui.theme.DarkBlue
+import com.am.weatherapp.ui.theme.LightBlue
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
 import kotlin.math.ceil
 
+
+val currentTime: String
+    get() {
+        val sdf = SimpleDateFormat("h a", Locale.US)  // Format: "4 AM"
+        return sdf.format(Calendar.getInstance().time)
+    }
+
 @Composable
-fun HourlyWeatherCell(item: HourlyWeatherItem){
+fun HourlyWeatherCell(item: HourlyWeatherItem, isCurrentTime: Boolean){
     Box(
         modifier = Modifier
             .width(90.dp)
             .padding(vertical = 20.dp)
             .background(
-                color = Color(0x1AFFFFFF), // 90%
+                if (isCurrentTime) DarkBlue else Color.Transparent,
                 shape = RoundedCornerShape(16.dp)
             )
-            .border(1.dp, color = Color(0x80000000), shape = RoundedCornerShape(16.dp))
+            .border(1.dp, color = DarkBlue, shape = RoundedCornerShape(16.dp))
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -53,7 +66,7 @@ fun HourlyWeatherCell(item: HourlyWeatherItem){
                 text = formatTime(item.time),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1C2B40)
+                color = if (isCurrentTime) Color.White else DarkBlue
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -73,7 +86,7 @@ fun HourlyWeatherCell(item: HourlyWeatherItem){
                 text = "$roundTemp°C",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1C2B40)
+                color = if (isCurrentTime) Color.White else DarkBlue
             )
         }
     }
@@ -83,22 +96,44 @@ fun HourlyWeatherCell(item: HourlyWeatherItem){
 @Composable
 
 fun HourlyForecastSection(hourlyData: List<HourlyWeatherItem>) {
+    val currentTimeFormatted = remember { getCurrentFormattedTime() }
+
+
+    val currentTimeIndex = hourlyData.indexOfFirst {
+        formatTime(it.time) == currentTimeFormatted
+    }
+
+
+    val scrollState = rememberLazyListState()
+
+    LaunchedEffect(currentTimeIndex) {
+        if (currentTimeIndex != -1) {
+            scrollState.animateScrollToItem(currentTimeIndex)
+        }
+    }
+
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 16.dp),
+        state = scrollState, // added scrollstate
         horizontalArrangement = Arrangement.spacedBy(10.dp)
-
     ) {
         itemsIndexed(hourlyData) { index, item ->
-            HourlyWeatherCell(item = item)
+            val isCurrentTime = formatTime(item.time) == currentTimeFormatted
+            HourlyWeatherCell(item = item, isCurrentTime = isCurrentTime)
         }
     }
 }
 
+fun getCurrentFormattedTime(): String {
+    val sdf = SimpleDateFormat("h a", Locale.US)
+    return sdf.format(Calendar.getInstance().time)
+}
+
 fun formatTime(timeString: String): String {
     val inputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-    val outputFormat = SimpleDateFormat("h a", Locale.getDefault()) // Americans format
+    val outputFormat = SimpleDateFormat("h a", Locale.getDefault())
 
     val date = inputFormat.parse(timeString) ?: return timeString
     return outputFormat.format(date)

@@ -1,14 +1,14 @@
 package com.am.weatherapp.ViewModel
 
-import android.util.Log
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.am.weatherapp.Utilities.Constants
 import com.am.weatherapp.api.HourlyWeatherItem
 import com.am.weatherapp.api.NetworkResponse
 import com.am.weatherapp.api.RetrofitInstance
 import com.am.weatherapp.api.WeatherState
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.gson.Gson
+
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -17,8 +17,6 @@ import kotlin.math.ceil
 class WeatherViewModel: ViewModel() {
     private val _weather = MutableStateFlow<NetworkResponse<WeatherState>>(NetworkResponse.Loading)
     val weather: StateFlow<NetworkResponse<WeatherState>> = _weather
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-
 
     fun loadWeatherForLocation(location: String, onSuccess: (String) -> Unit = {}) {
         viewModelScope.launch {
@@ -26,7 +24,7 @@ class WeatherViewModel: ViewModel() {
             try {
                 val response = RetrofitInstance.api.getCurrentWeather(
                     location = location,
-                    apiKey = "c50335248c6142ed803172103251104"
+                    apiKey = Constants.apiKey
                 )
 
                 val cityName = response.location.name

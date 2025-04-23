@@ -1,9 +1,10 @@
 package com.am.weatherapp.ui
 
-import android.R
-import android.health.connect.datatypes.units.Temperature
+
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,7 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -37,26 +37,41 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.am.weatherapp.api.WeatherState
 import androidx.compose.runtime.*
+import androidx.compose.ui.input.pointer.pointerInput
 import com.am.weatherapp.api.HourlyWeatherItem
 import com.am.weatherapp.api.NetworkResponse
+import com.am.weatherapp.ui.theme.BottomBackgroundColor
+import com.am.weatherapp.ui.theme.DarkBlue
+import com.am.weatherapp.ui.theme.LightBlue
+import com.am.weatherapp.ui.theme.LightButtonColor
+import com.am.weatherapp.ui.theme.TopBackgroundColor
 
 @Composable
 fun WeatherPage(weatherState: NetworkResponse<WeatherState>,
                 onRequestLocation: () -> Unit,
                 onSearchCity:(String) -> Unit) {
 
-    val screenHeight = LocalConfiguration.current.screenHeightDp
-    val topPadding = (screenHeight / 10).dp
     var isSearchActive by remember { mutableStateOf(false) }
     var searchText by remember { mutableStateOf("") }
+    val topPadding by animateDpAsState(
+        targetValue = if (isSearchActive) 120.dp else 60.dp,
+        label = "TopPaddingAnimation"
+    )
 
     Box (modifier = Modifier
         .fillMaxSize()
+        .pointerInput(Unit){
+            detectTapGestures( onTap = {
+                if (isSearchActive) {
+                    isSearchActive = false
+                }
+            })
+        }
         .background(
             brush = Brush.verticalGradient(
                 colors = listOf(
-                    Color(0xFF9DB9BE),
-                    Color(0xFFE3C7A8)
+                    TopBackgroundColor,
+                    BottomBackgroundColor
                 )
             )
         )
@@ -87,23 +102,23 @@ fun WeatherPage(weatherState: NetworkResponse<WeatherState>,
                     onClick = onRequestLocation,
                     modifier = Modifier.weight(0.5f),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFB4E2DF)
+                        containerColor = LightBlue
                     )
                 ) {
                     Icon(
                         imageVector = Icons.Default.LocationOn,
                         contentDescription = "Location",
-                        tint = Color(0xFF1C2B40)
+                        tint = DarkBlue
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
-                        text = "Current location",
-                        color = Color(0xFF1C2B40),
+                        text = "Location",
+                        color = DarkBlue,
+
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-
                 Spacer(modifier = Modifier.weight(0.1f))
                 Button(
                     onClick = {
@@ -111,18 +126,18 @@ fun WeatherPage(weatherState: NetworkResponse<WeatherState>,
                     },
                     modifier = Modifier.weight(0.4f),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFFFE6CF)
+                        containerColor = LightButtonColor
                     )
                 ) {
                     Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = "Search",
-                        tint = Color(0xFF1C2B40)
+                        tint = DarkBlue
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = "Search",
-                        color = Color(0xFF1C2B40)
+                        color = DarkBlue
                     )
                 }
             }
@@ -131,7 +146,6 @@ fun WeatherPage(weatherState: NetworkResponse<WeatherState>,
                     Spacer(modifier = Modifier.height(32.dp))
                     Text("Loading...", color = Color.DarkGray)
                 }
-
                 is NetworkResponse.Success -> {
                     WeatherInfoSection(
                         cityName = weatherState.data.cityName,
@@ -139,10 +153,8 @@ fun WeatherPage(weatherState: NetworkResponse<WeatherState>,
                         temperature = weatherState.data.temperature,
                         description = weatherState.data.description,
                         hourlyWeather = weatherState.data.hourlyData
-
                     )
                 }
-
                 is NetworkResponse.Error -> {
                     Spacer(modifier = Modifier.height(32.dp))
                     Text("Error: ${weatherState.message}", color = Color.Red)
@@ -151,7 +163,6 @@ fun WeatherPage(weatherState: NetworkResponse<WeatherState>,
 
         }
     }
-
 }
 
 @Composable
@@ -167,10 +178,10 @@ fun WeatherInfoSection(cityName: String,
             .fillMaxWidth()
             .padding(top = 32.dp)
     ) {
-        // 🏙 City name
+        //  City name
         Text(
             text = cityName,
-            color = Color(0xFF1C2B40),
+            color = DarkBlue,
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold
         )
@@ -189,7 +200,7 @@ fun WeatherInfoSection(cityName: String,
             text = temperature,
             fontSize = 48.sp,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF1C2B40),
+            color = DarkBlue,
             modifier = Modifier.padding(top = 8.dp)
         )
 
@@ -198,12 +209,10 @@ fun WeatherInfoSection(cityName: String,
             text = description,
             fontSize = 20.sp,
             fontWeight = FontWeight.Medium,
-            color = Color(0xFF1C2B40),
+            color = DarkBlue,
             modifier = Modifier.padding(top = 4.dp)
         )
-
         HourlyForecastSection(hourlyData = hourlyWeather)
     }
-    
 }
 
